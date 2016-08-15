@@ -163,17 +163,21 @@ function ComputeAnalysisWorker() {
                     // Q1/Q2/Q3 grade
                     var elevationData = this.elevationData_(activityStream, activityStatsMap);
 
+                    // fitnessData
+                    var fitnessData = this.fitnessData_(heartRateData, powerData);
+
                     // Return an array with all that shit...
                     return {
-                        'moveRatio': moveRatio,
-                        'toughnessScore': toughnessScore,
-                        'speedData': speedData,
-                        'paceData': paceData,
-                        'powerData': powerData,
-                        'heartRateData': heartRateData,
-                        'cadenceData': cadenceData,
-                        'gradeData': gradeData,
-                        'elevationData': elevationData
+                        moveRatio: moveRatio,
+                        toughnessScore: toughnessScore,
+                        speedData: speedData,
+                        paceData: paceData,
+                        powerData: powerData,
+                        heartRateData: heartRateData,
+                        cadenceData: cadenceData,
+                        gradeData: gradeData,
+                        elevationData: elevationData,
+                        fitnessData: fitnessData
                     };
 
                 },
@@ -916,6 +920,18 @@ function ComputeAnalysisWorker() {
                     }
 
                     return result;
+                },
+
+                fitnessData_: function(heartRateData, powerData) {
+
+                    // console.debug(JSON.stringify(heartRateData));
+                    // console.debug(JSON.stringify(powerData));
+
+                    var fitnessIndexByKG =  Math.pow(powerData.avgWattsPerKg, 2) / heartRateData.activityHeartRateReserve * 100;
+                    var fitnessIndexAvgWatts = powerData.avgWatts / heartRateData.activityHeartRateReserve;
+
+                    console.log(fitnessIndexByKG);
+                    console.log(fitnessIndexAvgWatts);
                 },
 
                 /**
