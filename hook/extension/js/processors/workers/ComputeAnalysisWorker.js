@@ -927,11 +927,13 @@ function ComputeAnalysisWorker() {
                     // console.debug(JSON.stringify(heartRateData));
                     // console.debug(JSON.stringify(powerData));
 
-                    var fitnessIndexByKG =  Math.pow(powerData.avgWattsPerKg, 2) / heartRateData.activityHeartRateReserve * 100;
+                    var fitnessIndexByKG =  powerData.avgWattsPerKg / heartRateData.activityHeartRateReserve * 100;
+                    var fitnessIndexByKGPow =  Math.pow(powerData.avgWattsPerKg, 2) / heartRateData.activityHeartRateReserve * 100;
                     var fitnessIndexAvgWatts = powerData.avgWatts / heartRateData.activityHeartRateReserve;
 
-                    console.log(fitnessIndexByKG);
-                    console.log(fitnessIndexAvgWatts);
+                    console.log('fitnessIndexByKG: ' + fitnessIndexByKG);
+                    console.log('fitnessIndexByKGPow: ' + fitnessIndexByKGPow);
+                    console.log('fitnessIndexAvgWatts: ' + fitnessIndexAvgWatts);
                 },
 
                 /**
