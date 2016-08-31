@@ -58,6 +58,7 @@ StravistiX.prototype = {
         this.handleMenu_();
         this.handleRemoteLinks_();
         this.handleWindyTyModifier_();
+        this.handleReliveCCModifier_();
         this.handleActivityScrolling_();
         this.handleDefaultLeaderboardFilter_();
         this.handleSegmentRankPercentage_();
@@ -146,16 +147,14 @@ StravistiX.prototype = {
             previewBuild = true;
         }
 
+        var latestRelease = _.first(releaseNotes);
+
         var updateMessageObj = {
             logo: '<img src="' + this.appResources_.logoStravistix + '"></img>',
             title: 'Update <strong>v' + this.appResources_.extVersion + '</strong>',
-            hotFixes: [],
-            features: [
-                'Added up to 50 zones in zones settings for each data type: speed, pace, cadence, heartrate, power, grade, ...',
-                'Added full time average speed based on elapsed time.',
-                'Extended stats charts refresh ! Migrated to "Chart.js 2.0"'
-            ],
-            fixes: [],
+            hotFixes: (latestRelease.hotFixes) ? latestRelease.hotFixes : [],
+            features: (latestRelease.features) ? latestRelease.features : [],
+            fixes: (latestRelease.fixes) ? latestRelease.fixes : [],
             upcommingFixes: [],
             upcommingFeatures: [
                 // 'Year distance target curve for free/premium accounts in year progressions charts (Run & Rides) :)',
@@ -166,12 +165,11 @@ StravistiX.prototype = {
         };
 
         var message = '';
-        // message += '<div style="background: #eee; padding: 8px;">';
-        // message += '<h5><strong>AT A GLANCE... </strong></h5>';
-        // message += '<h5>- Best splits HotFixed in 3.8.1: feature is re-established.</h5>';
-        // message += '<h5>- New year progressions targets charts for cycling/running !!</h5>';
-        // message += '<h5>- New fields in activity summary panel</h5>';
-        // message += '</div>';
+        if(!_.isEmpty(latestRelease.message)) {
+            message += '<div style="background: #eee; padding: 8px;">';
+            message += latestRelease.message;
+            message += '</div>';
+        }
 
         if (!_.isEmpty(updateMessageObj.hotFixes)) {
             message += '<h5><strong>HOTFIXES ' + this.appResources_.extVersion + ':</strong></h5>';
@@ -218,7 +216,7 @@ StravistiX.prototype = {
         }
 
         // Donate button
-        message += '<a style="font-size: 24px;" class="button btn-block btn-primary" target="_blank" id="extendedStatsButton" href="' + this.appResources_.settingsLink + '#/donate">';
+        message += '<a style="font-size: 24px;" class="button btn-block btn-primary" target="_blank" id="extendedStatsButton" href="' + this.appResources_.settingsLink + '#/?showDonation=true">';
         message += '<strong>Push this project higher !!!</strong>';
         message += '</a>';
 
@@ -323,6 +321,37 @@ StravistiX.prototype = {
         windyTyModifier.modify();
     },
 
+    handleReliveCCModifier_: function() {
+
+        if (!this.userSettings_.showHiddenBetaFeatures || !this.userSettings_.displayReliveCCLink) {
+            return;
+        }
+
+        // If we are not on a segment or activity page then return...
+        if (!window.location.pathname.match(/^\/activities/)) {
+            return;
+        }
+
+        if (!window.pageView) {
+            return;
+        }
+
+        // Avoid running Extended data at the moment
+        if (window.pageView.activity().get('type') != "Ride") {
+            return;
+        }
+
+        // If home trainer skip (it will use gps data to locate weather data)
+        if (window.pageView.activity().get('trainer')) {
+            return;
+        }
+
+        if (env.debugMode) console.log("Execute handleReliveCCModifier_()");
+
+        var reliveCCModifier = new ReliveCCModifier(this.activityId_);
+        reliveCCModifier.modify();
+    },
+
 
     /**
      *
@@ -345,15 +374,14 @@ StravistiX.prototype = {
     handleDefaultLeaderboardFilter_: function() {
 
         // If we are not on a segment or activity page then return...
-        if (!window.location.pathname.match(/^\/segments\/(\d+)$/) && !window.location.pathname.match(/^\/activities/)) {
+        if (!window.location.pathname.match(/^\/activities/)) {
             return;
         }
 
         // Kick out if we are not on SegmentLeaderboardView
-        try {
-            eval('Strava.Labs.Activities.SegmentLeaderboardView');
-        } catch (err) {
-            if (env.debugMode) console.log('Kick out no Strava.Labs.Activities.SegmentLeaderboardView available');
+        var view = Strava.Labs.Activities.SegmentLeaderboardView;
+
+        if (!view) {
             return;
         }
 

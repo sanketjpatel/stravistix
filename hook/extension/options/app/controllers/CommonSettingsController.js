@@ -1,4 +1,4 @@
-app.controller("CommonSettingsController", ['$scope', 'CommonSettingsService', 'ChromeStorageService', 'NotifierService', '$timeout', '$location', function($scope, CommonSettingsService, ChromeStorageService, NotifierService, $timeout, $location) {
+app.controller("CommonSettingsController", ['$scope', 'CommonSettingsService', 'ChromeStorageService', '$timeout', '$location', '$mdDialog', '$sce', function($scope, CommonSettingsService, ChromeStorageService, $timeout, $location, $mdDialog, $sce) {
 
     // Define options structure
     $scope.sections = CommonSettingsService.provideSections();
@@ -17,7 +17,9 @@ app.controller("CommonSettingsController", ['$scope', 'CommonSettingsService', '
                     option.active = userSettingsSynced[option.optionKey];
 
                     if (option.optionEnableSub) {
-                        $scope.displaySubOption(option.optionEnableSub, userSettingsSynced[option.optionKey]);
+                        _.each(option.optionEnableSub, function(subKey) {
+                            $scope.displaySubOption(subKey, userSettingsSynced[option.optionKey]);
+                        });
                     }
 
                 } else if (option.optionType === 'list') {
@@ -46,7 +48,9 @@ app.controller("CommonSettingsController", ['$scope', 'CommonSettingsService', '
         // Enable/disable sub option if needed
         if (option.optionEnableSub) {
             // Replace this to find option object from option.optionEnableSub
-            $scope.displaySubOption(option.optionEnableSub, option.active);
+            _.each(option.optionEnableSub, function(subKey) {
+                $scope.displaySubOption(subKey, option.active);
+            });
         }
     };
 
@@ -107,7 +111,19 @@ app.controller("CommonSettingsController", ['$scope', 'CommonSettingsService', '
         });
 
         if (option) {
-            NotifierService(option.optionTitle, option.optionHtml);
+
+            $mdDialog.show({
+                controller: function($scope) {
+                    $scope.title = option.optionTitle;
+                    $scope.htmlContent = $sce.trustAsHtml(option.optionHtml); // Mark the html as "trusted" with Strict Contextual Escaping ($sce)
+                    $scope.hide = function() {
+                        $mdDialog.hide();
+                    };
+                },
+                templateUrl: 'views/modals/settingHint.html',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
         }
     };
 
