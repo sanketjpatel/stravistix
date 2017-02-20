@@ -1,25 +1,29 @@
 class FitnessTrendTable {
 
-    static $inject: string[] = ['$scope', 'FitnessDataService', '$window'];
+    static $inject: string[] = ['$scope', '$window'];
 
-    constructor(public $scope: any, public fitnessDataService: IFitnessDataService, public $window: IWindowService) {
+    constructor(public $scope: any, public $window: IWindowService) {
 
         // Init directives constants
         $scope.const = {};
         $scope.const.fitnessDataForTable = null;
 
-        fitnessDataService.getFitnessData().then((fitnessData) => {
+        $scope.$on(FitnessTrendController.fitnessDataLoaded, (event: any, message: any) => {
 
-            let fitnessDataForTable: Array<IFitnessTrimpObjectTable> = [];
+            console.log('FitnessTrendTable: message ' + FitnessTrendController.fitnessDataLoaded + ' received');
+
+            let fitnessDataForTable: Array<IFitnessActivityTable> = [];
+
+            $scope.usePowerMeter = message.usePowerMeter;
 
             // Filter fitnessData: remove preview days
-            fitnessData = _.where(fitnessData, {
+            let fitnessData = _.where(message.fitnessData, {
                 previewDay: false
             });
 
-            _.each(fitnessData, (fitnessObj: IFitnessTrimpObject) => {
+            _.each(fitnessData, (fitnessObj: IFitnessActivity) => {
 
-                let newFitnessObj: IFitnessTrimpObjectTable = <IFitnessTrimpObjectTable> _.clone(fitnessObj);
+                let newFitnessObj: IFitnessActivityTable = <IFitnessActivityTable> _.clone(fitnessObj);
 
                 if (newFitnessObj.activitiesName.length) {
 
@@ -41,11 +45,15 @@ class FitnessTrendTable {
 
                     newFitnessObj.activitiesNameStr = finalActivityName;
                     newFitnessObj.type = [finalTypeName];
-                    newFitnessObj.trimp = parseInt(newFitnessObj.trimp.toFixed(0));
+                    newFitnessObj.trimpScore = (_.isNumber(newFitnessObj.trimpScore)) ? parseInt(newFitnessObj.trimpScore.toFixed(0)) : -1;
+                    newFitnessObj.powerStressScore = (_.isNumber(newFitnessObj.powerStressScore)) ? parseInt(newFitnessObj.powerStressScore.toFixed(0)) : -1;
+                    newFitnessObj.finalStressScore = (_.isNumber(newFitnessObj.finalStressScore)) ? parseInt(newFitnessObj.finalStressScore.toFixed(0)) : -1;
                 } else {
                     newFitnessObj.activitiesNameStr = '-';
                     newFitnessObj.type = ['-'];
-                    newFitnessObj.trimp = -1;
+                    newFitnessObj.trimpScore = -1;
+                    newFitnessObj.powerStressScore = -1;
+                    newFitnessObj.finalStressScore = -1;
                 }
 
                 fitnessDataForTable.push(newFitnessObj);
@@ -54,7 +62,6 @@ class FitnessTrendTable {
             $scope.const.fitnessDataForTable = fitnessDataForTable;
 
             $scope.refreshFitnessDataForTable();
-
         });
 
         $scope.limitOptions = [5, 10, 15, 25, 50, 100];
@@ -120,14 +127,14 @@ class FitnessTrendTable {
             });
         };
 
-        $scope.openActivities = (fitnessObject: IFitnessTrimpObjectTable) => {
+        $scope.openActivities = (fitnessObject: IFitnessActivityTable) => {
             _.each(fitnessObject.ids, (activityId: number) => {
                 $window.open('https://www.strava.com/activities/' + activityId, '_blank');
             });
         };
 
-        $scope.logPagination = (page: number, pageCount:number) => {
-            
+        $scope.logPagination = (page: number, pageCount: number) => {
+
         };
     }
 

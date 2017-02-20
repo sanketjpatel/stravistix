@@ -60,7 +60,7 @@ class MainController {
             if (target.message) {
                 let dialog = $mdDialog.confirm()
                     .htmlContent(target.message)
-                    .cancel('ok').ok('Help this free project.');
+                    .cancel('Hide').ok('Push project higher !');
                 $mdDialog.show(dialog).then(() => {
                     $scope.showDonation();
                 }, () => {
@@ -80,7 +80,7 @@ class MainController {
                 sections: [{
                     id: 'FITNESS_TREND',
                     name: 'Multisports Fitness Trend',
-                    subname: 'Multisports fitness trend based on activities having HR sensor',
+                    // subname: 'Multisports fitness trend based on activities having HR sensor',
                     sup: 'BETA',
                     icon: 'timeline',
                     link: routeMap.fitnessTrendRoute,

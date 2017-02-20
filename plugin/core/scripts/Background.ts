@@ -153,8 +153,3 @@ class Background {
 
 let background = new Background();
 background.init();
-
-
-
-
-

@@ -13,6 +13,62 @@ interface IReleaseNote {
 
 let releaseNotes: Array<IReleaseNote> = [
     {
+        version: '5.4.2',
+        message: '<i>Patch release: Now calculating TRIMP over elapsed time instead of moving time. TRIMP were not properly computed with activities without movements.<br/>You may need to perform a full sync of your synced history for the fitness trend feature. Memory management during synchronization of your history has been also improved.</i>',
+        hotFixes: [],
+        features: [
+            '<a href="' + Constants.OPTIONS_URL + '#/fitnessTrend" target="_blank">MultiSports Fitness Trend</a> can now use your cycling power meter to compute your fitness.',
+            'Strava premium additional goal progress is back! Still "experimental". Activate it from Hidden feature section',
+            'Renamed cycling stat "Punch Factor" to "Intensity" (= Weighted Power / FTP)'
+        ],
+        hideFeatureReleaseNote: true,
+        fixes: [
+            'Now calculating TRIMP over elapsed time instead of moving time',
+            'Improved memory management during synchronization of your history',
+        ],
+    },
+    {
+        version: '5.4.1',
+        message: '<strong>5.4.1:</strong> <i>Bug fix release</i></br></br><strong>5.4.0 features reminder:</strong> <a href="' + Constants.OPTIONS_URL + '#/fitnessTrend" target="_blank">MultiSports Fitness Trend</a> now use your cycling power meter to compute your fitness when available.',
+        hotFixes: [],
+        features: [
+            'Fitness trend can now use your cycling power meter to compute your fitness.',
+            'Strava premium additional goal progress is back! Still "experimental". Activate it from Hidden feature section',
+            'Renamed cycling stat "Punch Factor" to "Intensity" (= Weighted Power / FTP)'
+        ],
+        hideFeatureReleaseNote: true,
+        fixes: [
+            'Fix wrong daily fitness final score in case of multiple activities done on same day having TRIMP score for some and PSS score for others.'
+        ],
+    },
+    {
+        version: '5.4.0',
+        message: '<a href="' + Constants.OPTIONS_URL + '#/fitnessTrend" target="_blank">MultiSports Fitness Trend</a> now use your cycling power meter to compute your fitness when available.</br></br>Swimming is not supported properly in fitness trend... Now taking care of swimmers ;) Still in Beta isn\'t it ?^^;)',
+        hotFixes: [],
+        features: [
+            'Fitness trend can now use your cycling power meter to compute your fitness.',
+            'Strava premium additional goal progress is back! Still "experimental". Activate it from Hidden feature section',
+            'Renamed cycling stat "Punch Factor" to "Intensity" (= Weighted Power / FTP)'
+        ],
+        hideFeatureReleaseNote: false,
+        fixes: [
+        ],
+    },
+    {
+        version: '5.3.1',
+        message: '<strong>5.3.1:</strong> <i>Strava premium additional goal has been delayed at the moment.</i></br></br><strong>5.3.0 features reminder:</strong> <i>New beta version of <a href="' + Constants.OPTIONS_URL + '#/fitnessTrend" target="_blank">MultiSports Fitness Trend</a></br></br>- Added form zones to fitness trend. Gives guidelines to train properly: Stay in the right training zone and avoid risky over load. Prepare for the race day. Manage your rest with accuracy. Etc...</br>- On next update (5.4.0): cycling power meter will be also used to compute your fitness trend (if you have this sensor).</i>',
+        hotFixes: [],
+        features: [
+            'Added form zones to fitness trend.',
+            'Improved required time to generate fitness trend graph.',
+            'Others minors improvements around MultiSports Fitness Trend & synchronisation.'
+        ],
+        hideFeatureReleaseNote: true,
+        fixes: [
+            'Due to feature problems: strava premium additional goal progress tracking has be removed temporally. It\'s coming back later.'
+        ],
+    },
+    {
         version: '5.3.0',
         message: '</br>New beta version of <a href="' + Constants.OPTIONS_URL + '#/fitnessTrend" target="_blank">MultiSports Fitness Trend</a></br></br>- Added form zones to fitness trend. Gives guidelines to train properly: Stay in the right training zone and avoid risky over load.</br>Prepare for the race day. Manage your rest with accuracy. Etc...</br></br>- On next update: cycling power meter will be also used to compute your fitness trend (if you have this sensor).',
         hotFixes: [],
@@ -614,7 +670,7 @@ let releaseNotes: Array<IReleaseNote> = [
         features: [
             "Add Surface Area of your activities (raceshape EREA)",
             "Normalized Power (TrainingPeaks trademarked term) removed. Profit to Weighted Power data now",
-            "Intensity Factor (TrainingPeaks trademarked term) removed. Profit to Punch Factor data now",
+            "Intensity Factor (TrainingPeaks trademarked term) removed. Profit to Intensity data now",
             "Prepare better veloviewer.com integration (waiting for veloviewer.com side now...)",
             "Bugs fixes",
         ]
@@ -751,7 +807,7 @@ let releaseNotes: Array<IReleaseNote> = [
         features: [
             "Add Estimated Weighted Power for cycling activities",
             "Add Estimated Variability Index for cycling activities",
-            "Add Estimated Punch Factor for cycling activities",
+            "Add Estimated Intensity for cycling activities",
             "Bug fixing",
         ]
     }, {
